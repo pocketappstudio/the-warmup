@@ -33,13 +33,20 @@ const prKeys=()=>S.noKids?['me','wife','home']:['me','wife','kids','home'];
 const prAll=r=>{const p=(r&&r.pr)||{};return prKeys().every(k=>p[k])&&!!p.aloud};
 function prStreak(){let n=0;const d=new Date();if(!prAll(S.log[today()]))d.setDate(d.getDate()-1);for(;;){if(prAll(S.log[fmt(d)])){n++;d.setDate(d.getDate()-1)}else break}return n}
 function dayVerse(a){const pd=dayPressure(a);if(pd)return{ref:pd[4],pd};const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?{ref:w.v[0],w}:{ref:'Eph 5:25'}}
-function prayCards(a,r){const v=dayVerse(a),P=makePrayers(a,{seed:today()+a.id,name:S.her.name,weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref}),p=r.pr||{};
+function prayCards(a,r){const v=dayVerse(a),P=makePrayers(a,{seed:today()+a.id,name:S.her.name,weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref,need:r.need}),p=r.pr||{};
  const blk=(k,title,extra)=>`<div class="pray ${p[k]?'ok':''}"><div class="ph"><b>${title}</b>${extra||''}</div><p>${esc(P[k])}</p><button class="chk2 ${p[k]?'on':''}" data-pr="${k}">${p[k]?'Prayed ✓':'Mark prayed'}</button></div>`;
  return `<div class="card"><h2 style="margin-top:0">My prayer</h2><p class="small vref">${esc(v.ref)} ESV</p>${blk('me','')}</div>
  <div class="card"><h2 style="margin-top:0">Leadership Challenge</h2><p class="small vref">Pray each one. Pray aloud with your family.</p>
  ${blk('wife','Pray for your wife')}${S.noKids?'':blk('kids','Pray for your children','<button class="lnk" id="nokids">No children at home</button>')}${blk('home','Pray for your home')}
  <button class="chk2 aloud ${p.aloud?'on':''}" data-pr="aloud">${p.aloud?'Prayed aloud with family ✓':'Prayed aloud with family'}</button>
  <div class="pstreak"><b>${prStreak()}</b> day prayer streak${S.noKids?' <button class="lnk" id="yeskids">Children at home</button>':''}</div></div>`}
+let needOpen=false,needDraft={k:'',who:'self'};
+function needCard(r){const n=r.need;if(n){const d=NEED.find(x=>x[0]===n.k),w=NEEDWHO.find(x=>x[0]===n.who);
+  return `<div class="card need"><div class="ph"><b>Current Need</b><button class="lnk" id="needundo">Undo</button></div><div><span class="tag">${esc(d[1])}</span><span class="tag">${esc(w[1])}</span></div>${n.note?`<p class="muted">${esc(n.note)}</p>`:''}<p>${esc(d[4])}</p>${verse(d[3])}</div>`}
+ if(!needOpen)return `<button class="btn alt full" id="needopen">+ Current Need</button>`;
+ return `<div class="card need"><b>Current Need</b><div class="chips">${NEED.map(d=>`<button type="button" class="chip ${needDraft.k===d[0]?'on':''}" data-nk="${d[0]}">${esc(d[1])}</button>`).join('')}</div>
+ <b class="small" style="display:block;margin-top:10px">Who it affects</b><div class="chips">${NEEDWHO.map(d=>`<button type="button" class="chip ${needDraft.who===d[0]?'on':''}" data-nw="${d[0]}">${esc(d[1])}</button>`).join('')}</div>
+ <input type="text" id="neednote" maxlength="80" placeholder="Short note (optional)" style="margin-top:12px"><button class="btn full" id="needsave" ${needDraft.k?'':'disabled'}>Save</button> <button class="lnk" id="needcancel">Cancel</button></div>`}
 function dayRec(date){if(!S.log[date]){S.log[date]={aid:pick(date).id,done:false};save()}return S.log[date]}
 function streak(){let n=0;const d=new Date();if(!(S.log[today()]||{}).done)d.setDate(d.getDate()-1);for(;;){const k=d.toISOString?fmt(d):'';if(S.log[k]&&S.log[k].done){n++;d.setDate(d.getDate()-1)}else break}return n}
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -87,6 +94,7 @@ V.today=()=>{if(!scores()&&!S.started)return V.welcome();if(locked())return V.un
  <div class="card ${r.done?'done':''}"><div class="posture">Heart posture · ${a.posture}</div><h1>${esc(a.title)}</h1><p class="muted">${esc(a.why)}</p>
  <h2>Today's act for ${esc(n)}</h2><p><b>${esc(a.act)}</b></p><ol class="steps">${a.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
  ${S.her.interests||S.her.schedule?`<p class="small">Keep in mind: ${esc([S.her.interests,S.her.schedule].filter(Boolean).join(' · '))}</p>`:''}</div>
+ ${needCard(r)}
  ${prayCards(a,r)}
  ${leadCards()}
  <div class="card"><h2 style="margin-top:0">Evening reflection</h2><p>${esc(a.reflect)}</p><textarea id="refl" placeholder="Write honestly. Only you will see this.">${esc(r.note)}</textarea>
@@ -95,7 +103,7 @@ V.today=()=>{if(!scores()&&!S.started)return V.welcome();if(locked())return V.un
 function leadCards(){const ps=[...(S.her.pressures||[])].sort((x,y)=>(y.w==='week')-(x.w==='week')||(y.s==='major')-(x.s==='major'));if(!ps.length)return '';
  return `<div class="lead"><h2>Leading through it</h2>${ps.map((p,i)=>{const d=PRESSURE.find(x=>x[0]===p.k),g=GUIDE[p.k];return `<details class="card" ${i===0?'open':''}><summary><b>${esc(d[1])}</b><span class="tag">${p.w==='week'?'This week':'Ongoing'}</span></summary><ol class="steps">${g[0].map(s=>`<li>${esc(s)}</li>`).join('')}</ol>${g[1].map(verse).join('')}</details>`}).join('')}</div>`}
 V.history=()=>{const ds=Object.keys(S.log).sort().reverse();return `<h1>Completion log</h1><p>Streak: <b>${streak()}</b> · Completed: <b>${ds.filter(d=>S.log[d].done).length}</b> of ${ds.length} days</p>
- ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}${prAll(r)?' · prayers ✓':''}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
+ ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}${prAll(r)?' · prayers ✓':''}${r.need?' · need: '+esc(NEED.find(x=>x[0]===r.need.k)[1].toLowerCase()):''}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
 V.unlock=(wall)=>`<h1>${wall?'Your 7 free days are complete':'Unlock full access'}</h1><p>Well done finishing a week. Unlock unlimited daily assignments from the full library of ${ASSIGN_SRC.length}, with a one-time purchase, no subscription.</p>
  <div class="card">${CONFIG.gumroadProductId?`<a class="btn rust full" href="${esc(CONFIG.gumroadUrl)}" target="_blank" rel="noopener">Buy on Gumroad</a><p class="small">Then paste your license key:</p><input type="text" id="lic" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"><button class="btn full" id="verify">Unlock</button><p id="lmsg" class="small"></p>`:'<p><b>Purchasing opens soon.</b></p>'}
  <p class="small">Support and refunds are handled through Gumroad.</p></div>${wall?'<a class="btn alt full" href="#history">View my log</a>':''}`;
@@ -123,6 +131,13 @@ const pb=$('#pbox');if(pb){const redraw=()=>{pb.innerHTML=pressBox();bindP()};co
 app.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{const r=S.log[today()];r.pr=r.pr||{};r.pr[b.dataset.pr]=!r.pr[b.dataset.pr];save();const y=scrollY;route();scrollTo(0,y)});
  const nk=$('#nokids');if(nk)nk.onclick=()=>{S.noKids=true;save();const y=scrollY;route();scrollTo(0,y)};
  const yk=$('#yeskids');if(yk)yk.onclick=()=>{S.noKids=false;save();const y=scrollY;route();scrollTo(0,y)};
+const rr=()=>{const y=scrollY;route();scrollTo(0,y)};
+ const no=$('#needopen');if(no)no.onclick=()=>{needOpen=true;needDraft={k:'',who:'self'};rr()};
+ const nc=$('#needcancel');if(nc)nc.onclick=()=>{needOpen=false;rr()};
+ app.querySelectorAll('[data-nk]').forEach(b=>b.onclick=()=>{needDraft.k=b.dataset.nk;const t=($('#neednote')||{}).value;needDraft.note=t;rr();const i=$('#neednote');if(i)i.value=needDraft.note||''});
+ app.querySelectorAll('[data-nw]').forEach(b=>b.onclick=()=>{needDraft.who=b.dataset.nw;needDraft.note=($('#neednote')||{}).value;rr();const i=$('#neednote');if(i)i.value=needDraft.note||''});
+ const ns=$('#needsave');if(ns)ns.onclick=()=>{if(!needDraft.k)return;S.log[today()].need={k:needDraft.k,who:needDraft.who,note:$('#neednote').value.trim().slice(0,80)};needOpen=false;save();rr()};
+ const nu=$('#needundo');if(nu)nu.onclick=()=>{delete S.log[today()].need;save();rr()};
  const rf=$('#refl');if(rf)rf.oninput=()=>{S.log[today()].note=rf.value;save()};
  const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;r.at=Date.now();save();route()};
  const vf=$('#verify');if(vf)vf.onclick=verifyLicense;
