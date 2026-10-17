@@ -1,6 +1,7 @@
 (function(){
 const KEY='thewarmup.v1';try{if(!localStorage.getItem(KEY)){for(const o of ['lovelessons.v1','lovework.v1','loveher.v1','hfh.v1']){const v=localStorage.getItem(o);if(v){localStorage.setItem(KEY,v);break}}}['lovelessons.v1','lovework.v1','loveher.v1','hfh.v1'].forEach(o=>localStorage.removeItem(o))}catch(e){}
 const S=Object.assign({answers:{},weak:[],weakOther:'',her:{},log:{},license:null,started:false},JSON.parse(localStorage.getItem(KEY)||'{}'));
+if(!Array.isArray(S.her.pressures))S.her.pressures=[];S.her.pressures=S.her.pressures.filter(p=>p&&PRESSURE.some(x=>x[0]===p.k));
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const $=s=>document.querySelector(s), app=$('#app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -21,8 +22,13 @@ function hash(s){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0)
 function pick(date){
  const sc=scores();const weak=new Set(S.weak.length?S.weak:suggested(sc));const love=new Set(S.her.love||[]),stress=new Set(S.her.stress||[]);const season=S.her.season;
  const recent=new Set(Object.entries(S.log).filter(([d])=>d<date).sort().slice(-30).map(([,v])=>v.aid));
+ const press=activePressures();
  let best=null,bs=-1e9;for(const a of ASSIGN_SRC){let s=0;for(const t of a.tags){if(weak.has(t))s+=3;if(love.has(t))s+=2;if(stress.has(t))s+=2;if(t===season)s+=3}
+  for(const p of press){if(a.tags.includes('p-'+p.k))s+=p.wt;else if(a.tags.includes(p.alias))s+=p.wt/2}
   if(recent.has(a.id))s-=50;s+=(hash(date+a.id)%100)/40;if(s>bs){bs=s;best=a}}return best}
+const WEEK=7*864e5;
+function activePressures(){return (S.her.pressures||[]).map(p=>{const d=PRESSURE.find(x=>x[0]===p.k),fresh=p.w!=='week'||Date.now()-(p.at||0)<WEEK;return{k:p.k,alias:d[3],wt:(p.w==='week'?(fresh?5:2):3)+(p.s==='major'?1:0)}})}
+function dayPressure(a){const ps=S.her.pressures||[];const p=ps.filter(p=>a.tags.includes('p-'+p.k)).sort((x,y)=>(y.w==='week')-(x.w==='week'))[0];return p&&PRESSURE.find(x=>x[0]===p.k)}
 function dayRec(date){if(!S.log[date]){S.log[date]={aid:pick(date).id,done:false};save()}return S.log[date]}
 function streak(){let n=0;const d=new Date();if(!(S.log[today()]||{}).done)d.setDate(d.getDate()-1);for(;;){const k=d.toISOString?fmt(d):'';if(S.log[k]&&S.log[k].done){n++;d.setDate(d.getDate()-1)}else break}return n}
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -51,11 +57,15 @@ V.weak=()=>{const sc=scores();const sug=suggested(sc);if(!S.weakInit&&sc){S.weak
  <h2>In your own words</h2><textarea id="weakOther" placeholder="Anything else you know you need to work on...">${esc(S.weakOther)}</textarea>
  <p>${verse('Ps 139:23-24')}</p><a class="btn full" href="#her">Next: Know Her</a>`};
 const chkList=(name,list,sel)=>list.map(([k,l])=>`<label class="chk"><input type="checkbox" name="${name}" value="${k}" ${(sel||[]).includes(k)?'checked':''}>${esc(l)}</label>`).join('');
-V.her=()=>{const h=S.her;return `<h1>Know Her</h1><p>Your wife doesn't need the app. Fill in what you know; if you're unsure, ask her. That conversation is part of loving her.</p>
+const pressRow=p=>{const d=PRESSURE.find(x=>x[0]===p.k);const seg=(g,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button type="button" data-g="${g}" data-v="${v}" class="${p[g]===v?'on':''}">${l}</button>`).join('')}</div>`;
+ return `<div class="prow" data-k="${p.k}"><b>${esc(d[1])}</b><div class="segs">${seg('w',[['week','This week'],['ongoing','Ongoing']])}${seg('s',[['major','Major'],['minor','Minor']])}</div></div>`};
+const pressBox=()=>{const sel=S.her.pressures||[];return `<b>Pressures</b><div class="chips">${PRESSURE.map(d=>`<button type="button" class="chip ${sel.some(p=>p.k===d[0])?'on':''}" data-p="${d[0]}">${esc(d[1])}</button>`).join('')}</div><div id="prows">${sel.map(pressRow).join('')}</div>`};
+V.her=()=>{const h=S.her;return `<h1>Know Her</h1>
 <form id="herf"><div class="card"><label>Her first name<input type="text" name="name" value="${esc(h.name)}"></label></div>
+<div class="card"><label><b>Current season</b><select name="season">${SEASON.map(([k,l])=>`<option value="${k}" ${(h.season||'ordinary')===k?'selected':''}>${l}</option>`).join('')}</select></label></div>
+<div class="card" id="pbox">${pressBox()}</div>
 <div class="card"><b>She feels most loved through...</b>${chkList('love',LOVE,h.love)}</div>
 <div class="card"><b>What stresses her right now</b>${chkList('stress',STRESS,h.stress)}</div>
-<div class="card"><label><b>Current season</b><select name="season">${SEASON.map(([k,l])=>`<option value="${k}" ${h.season===k?'selected':''}>${l}</option>`).join('')}</select></label></div>
 <div class="card"><label><b>Her interests</b><textarea name="interests" placeholder="Gardening, a book series, a sports team, coffee shops...">${esc(h.interests)}</textarea></label>
 <label><b>Her schedule / hardest time of day</b><textarea name="schedule" placeholder="e.g. Mornings with the kids; works Tue/Thu">${esc(h.schedule)}</textarea></label>
 <label><b>What I noticed lately</b><textarea name="notes" placeholder="Things she mentioned, worries, hopes...">${esc(h.notes)}</textarea></label></div>
@@ -66,9 +76,12 @@ V.today=()=>{if(!scores()&&!S.started)return V.welcome();if(locked())return V.un
  <div class="card ${r.done?'done':''}"><div class="posture">Heart posture · ${a.posture}</div><h1>${esc(a.title)}</h1><p class="muted">${esc(a.why)}</p>
  <h2>Today's act for ${esc(n)}</h2><p><b>${esc(a.act)}</b></p><ol class="steps">${a.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
  ${S.her.interests||S.her.schedule?`<p class="small">Keep in mind: ${esc([S.her.interests,S.her.schedule].filter(Boolean).join(' · '))}</p>`:''}</div>
+ ${leadCards()}
  <div class="card"><h2 style="margin-top:0">Evening reflection</h2><p>${esc(a.reflect)}</p><textarea id="refl" placeholder="Write honestly. Only you will see this.">${esc(r.note)}</textarea>
  <button class="btn full ${r.done?'alt':'rust'}" id="done">${r.done?'Completed ✓ (tap to undo)':'Mark as done'}</button></div>
- ${(()=>{const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?`<div class="card"><span class="tag">${esc(w.name)}</span>${verse(w.v[0])}</div>`:verse('Eph 5:25')})()}`};
+ ${(()=>{const pd=dayPressure(a);if(pd)return `<div class="card"><span class="tag">${esc(pd[1])}</span>${verse(pd[4])}</div>`;const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?`<div class="card"><span class="tag">${esc(w.name)}</span>${verse(w.v[0])}</div>`:verse('Eph 5:25')})()}`};
+function leadCards(){const ps=[...(S.her.pressures||[])].sort((x,y)=>(y.w==='week')-(x.w==='week')||(y.s==='major')-(x.s==='major'));if(!ps.length)return '';
+ return `<div class="lead"><h2>Leading through it</h2>${ps.map((p,i)=>{const d=PRESSURE.find(x=>x[0]===p.k),g=GUIDE[p.k];return `<details class="card" ${i===0?'open':''}><summary><b>${esc(d[1])}</b><span class="tag">${p.w==='week'?'This week':'Ongoing'}</span></summary><ol class="steps">${g[0].map(s=>`<li>${esc(s)}</li>`).join('')}</ol>${g[1].map(verse).join('')}</details>`}).join('')}</div>`}
 V.history=()=>{const ds=Object.keys(S.log).sort().reverse();return `<h1>Completion log</h1><p>Streak: <b>${streak()}</b> · Completed: <b>${ds.filter(d=>S.log[d].done).length}</b> of ${ds.length} days</p>
  ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
 V.unlock=(wall)=>`<h1>${wall?'Your 7 free days are complete':'Unlock full access'}</h1><p>Well done finishing a week. Unlock unlimited daily assignments from the full library of ${ASSIGN_SRC.length}, with a one-time purchase, no subscription.</p>
@@ -90,8 +103,11 @@ function bind(v,arg){
   S.started=true;save();location.hash=p<ITEMS.length/PER-1?'#test/'+(p+1):'#results'};
  app.querySelectorAll('[data-w]').forEach(c=>c.onchange=()=>{const id=c.dataset.w;S.weak=c.checked?[...S.weak,id]:S.weak.filter(x=>x!==id);save();const y=scrollY;route();scrollTo(0,y)});
  const wo=$('#weakOther');if(wo)wo.oninput=()=>{S.weakOther=wo.value;save()};
- const hf=$('#herf');if(hf)hf.onsubmit=e=>{e.preventDefault();const fd=new FormData(hf);S.her={name:fd.get('name').trim(),love:fd.getAll('love'),stress:fd.getAll('stress'),season:fd.get('season'),interests:fd.get('interests'),schedule:fd.get('schedule'),notes:fd.get('notes')};
+ const hf=$('#herf');if(hf)hf.onsubmit=e=>{e.preventDefault();const fd=new FormData(hf);S.her={pressures:S.her.pressures||[],name:fd.get('name').trim(),love:fd.getAll('love'),stress:fd.getAll('stress'),season:fd.get('season'),interests:fd.get('interests'),schedule:fd.get('schedule'),notes:fd.get('notes')};
   const r=S.log[today()];if(r&&!r.done&&!r.note)delete S.log[today()];S.started=true;save();location.hash='#today'};
+const pb=$('#pbox');if(pb){const redraw=()=>{pb.innerHTML=pressBox();bindP()};const bindP=()=>{
+  pb.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const k=c.dataset.p,L=S.her.pressures,i=L.findIndex(p=>p.k===k);if(i>=0)L.splice(i,1);else L.push({k,w:'week',s:PRESSURE.find(x=>x[0]===k)[2],at:Date.now()});save();redraw()});
+  pb.querySelectorAll('.prow .seg button').forEach(b=>b.onclick=()=>{const p=S.her.pressures.find(p=>p.k===b.closest('.prow').dataset.k);p[b.dataset.g]=b.dataset.v;if(b.dataset.g==='w'&&b.dataset.v==='week')p.at=Date.now();save();redraw()})};bindP()}
  const rf=$('#refl');if(rf)rf.oninput=()=>{S.log[today()].note=rf.value;save()};
  const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;r.at=Date.now();save();route()};
  const vf=$('#verify');if(vf)vf.onclick=verifyLicense;
