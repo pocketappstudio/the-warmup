@@ -15,6 +15,8 @@ function scores(){const fac={};for(const it of ITEMS){const a=S.answers[it.id];i
 const level=p=>p<35?'low':p>65?'high':'mid';
 function suggested(sc){if(!sc)return[];return WEAK.filter(w=>w.auto&&level(sc.pct[w.auto[0]])===w.auto[1]).map(w=>w.id)}
 const DISCLAIMER='<p class="small"><b>Not a clinical diagnosis.</b> This is a self-reflection tool based on the public-domain IPIP-NEO-120 (Johnson, 2014; International Personality Item Pool, ipip.ori.org). Scores are relative to the scale, not to population norms. For mental health concerns, talk to a qualified counselor or pastor.</p>';
+const SAFE='If you or anyone in your home is in danger, or you have thoughts of self-harm, call 911 now, or 988 for crisis support.';
+const NOTADV='Not medical, mental-health, legal, financial or marriage-counseling advice. Seek pastoral or qualified help.';
 function verse(ref){return `<blockquote>${esc(VERSES[ref])}<b>${esc(ref)} ESV</b></blockquote>`}
 
 // ---------- Assignment engine ----------
@@ -42,11 +44,11 @@ function prayCards(a,r){const v=dayVerse(a),P=makePrayers(a,{seed:today()+a.id,n
  <div class="pstreak"><b>${prStreak()}</b> day prayer streak${S.noKids?' <button class="lnk" id="yeskids">Children at home</button>':''}</div></div>`}
 let needOpen=false,needDraft={k:'',who:'self'};
 function needCard(r){const n=r.need;if(n){const d=NEED.find(x=>x[0]===n.k),w=NEEDWHO.find(x=>x[0]===n.who);
-  return `<div class="card need"><div class="ph"><b>Current Need</b><button class="lnk" id="needundo">Undo</button></div><div><span class="tag">${esc(d[1])}</span><span class="tag">${esc(w[1])}</span></div>${n.note?`<p class="muted">${esc(n.note)}</p>`:''}<p>${esc(d[4])}</p>${verse(d[3])}</div>`}
+  return `<div class="card need"><div class="ph"><b>Current Need</b><button class="lnk" id="needundo">Undo</button></div><div><span class="tag">${esc(d[1])}</span><span class="tag">${esc(w[1])}</span></div>${n.note?`<p class="muted">${esc(n.note)}</p>`:''}<p>${esc(d[4])}</p>${verse(d[3])}<p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>`}
  if(!needOpen)return `<button class="btn alt full" id="needopen">+ Current Need</button>`;
  return `<div class="card need"><b>Current Need</b><div class="chips">${NEED.map(d=>`<button type="button" class="chip ${needDraft.k===d[0]?'on':''}" data-nk="${d[0]}">${esc(d[1])}</button>`).join('')}</div>
  <b class="small" style="display:block;margin-top:10px">Who it affects</b><div class="chips">${NEEDWHO.map(d=>`<button type="button" class="chip ${needDraft.who===d[0]?'on':''}" data-nw="${d[0]}">${esc(d[1])}</button>`).join('')}</div>
- <input type="text" id="neednote" maxlength="80" placeholder="Short note (optional)" style="margin-top:12px"><button class="btn full" id="needsave" ${needDraft.k?'':'disabled'}>Save</button> <button class="lnk" id="needcancel">Cancel</button></div>`}
+ <input type="text" id="neednote" maxlength="80" placeholder="Short note (optional)" style="margin-top:12px"><button class="btn full" id="needsave" ${needDraft.k?'':'disabled'}>Save</button> <button class="lnk" id="needcancel">Cancel</button><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>`}
 function dayRec(date){if(!S.log[date]){S.log[date]={aid:pick(date).id,done:false};save()}return S.log[date]}
 function streak(){let n=0;const d=new Date();if(!(S.log[today()]||{}).done)d.setDate(d.getDate()-1);for(;;){const k=d.toISOString?fmt(d):'';if(S.log[k]&&S.log[k].done){n++;d.setDate(d.getDate()-1)}else break}return n}
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -101,7 +103,7 @@ V.today=()=>{if(!scores()&&!S.started)return V.welcome();if(locked())return V.un
  <button class="btn full ${r.done?'alt':'rust'}" id="done">${r.done?'Completed ✓ (tap to undo)':'Mark as done'}</button></div>
  ${(()=>{const pd=dayPressure(a);if(pd)return `<div class="card"><span class="tag">${esc(pd[1])}</span>${verse(pd[4])}</div>`;const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?`<div class="card"><span class="tag">${esc(w.name)}</span>${verse(w.v[0])}</div>`:verse('Eph 5:25')})()}`};
 function leadCards(){const ps=[...(S.her.pressures||[])].sort((x,y)=>(y.w==='week')-(x.w==='week')||(y.s==='major')-(x.s==='major'));if(!ps.length)return '';
- return `<div class="lead"><h2>Leading through it</h2>${ps.map((p,i)=>{const d=PRESSURE.find(x=>x[0]===p.k),g=GUIDE[p.k];return `<details class="card" ${i===0?'open':''}><summary><b>${esc(d[1])}</b><span class="tag">${p.w==='week'?'This week':'Ongoing'}</span></summary><ol class="steps">${g[0].map(s=>`<li>${esc(s)}</li>`).join('')}</ol>${g[1].map(verse).join('')}</details>`}).join('')}</div>`}
+ return `<div class="lead"><h2>Leading through it</h2><p class="small">Abuse or danger is not yours to handle alone: call 911 and seek pastoral or qualified help.</p>${ps.map((p,i)=>{const d=PRESSURE.find(x=>x[0]===p.k),g=GUIDE[p.k];return `<details class="card" ${i===0?'open':''}><summary><b>${esc(d[1])}</b><span class="tag">${p.w==='week'?'This week':'Ongoing'}</span></summary><ol class="steps">${g[0].map(s=>`<li>${esc(s)}</li>`).join('')}</ol>${g[1].map(verse).join('')}</details>`}).join('')}</div>`}
 V.history=()=>{const ds=Object.keys(S.log).sort().reverse();return `<h1>Completion log</h1><p>Streak: <b>${streak()}</b> · Completed: <b>${ds.filter(d=>S.log[d].done).length}</b> of ${ds.length} days</p>
  ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}${prAll(r)?' · prayers ✓':''}${r.need?' · need: '+esc(NEED.find(x=>x[0]===r.need.k)[1].toLowerCase()):''}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
 V.unlock=(wall)=>`<h1>${wall?'Your 7 free days are complete':'Unlock full access'}</h1><p>Well done finishing a week. Unlock unlimited daily assignments from the full library of ${ASSIGN_SRC.length}, with a one-time purchase, no subscription.</p>
@@ -111,8 +113,10 @@ V.more=()=>`<h1>More</h1><a class="btn alt full" href="#results">My personality 
  <div class="card"><b>Your data</b><p class="small">Stored only in this browser. Clearing browser data erases it.</p><button class="btn alt" id="export">Export backup</button> <button class="btn alt" id="wipe" style="color:#a33;border-color:#a33">Erase everything</button></div>`;
 V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accounts, no servers, no tracking.</p>
 <div class="card"><b>Personality inventory</b><p class="small">Items from the IPIP-NEO-120 (Johnson, J. A. 2014, Journal of Research in Personality, 51, 78-89), part of the International Personality Item Pool (Goldberg et al., 2006; ipip.ori.org), which is in the public domain. Result descriptions are original to this app.</p>${DISCLAIMER}</div>
-<div class="card"><b>Scripture</b><p class="small">Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.</p><p class="small">This app quotes ${VERSE_COUNT} verses.</p></div>
-<div class="card"><b>Support & refunds</b><p class="small">Handled through Gumroad.</p></div>`;
+<div class="card"><b>Scripture</b><p class="small">Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.</p><p class="small">This app quotes ${VERSE_COUNT} verses.</p></div>
+<div class="card"><b>Safety</b><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>
+<div class="card"><b>Terms</b><p class="small">Provided as-is.<br>No guarantees of results.<br>For adults 18+, personal use.<br>Use at your own risk.<br>Support and refunds only through Gumroad.</p></div>
+<div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>Only your license key goes to Gumroad, to unlock.<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>`;
 
 // ---------- Router ----------
 function route(){const [v,arg]=(location.hash.slice(1)||'today').split('/');const fn=V[v]||V.today;app.innerHTML=fn(arg);window.scrollTo(0,0);
