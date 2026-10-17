@@ -29,6 +29,17 @@ function pick(date){
 const WEEK=7*864e5;
 function activePressures(){return (S.her.pressures||[]).map(p=>{const d=PRESSURE.find(x=>x[0]===p.k),fresh=p.w!=='week'||Date.now()-(p.at||0)<WEEK;return{k:p.k,alias:d[3],wt:(p.w==='week'?(fresh?5:2):3)+(p.s==='major'?1:0)}})}
 function dayPressure(a){const ps=S.her.pressures||[];const p=ps.filter(p=>a.tags.includes('p-'+p.k)).sort((x,y)=>(y.w==='week')-(x.w==='week'))[0];return p&&PRESSURE.find(x=>x[0]===p.k)}
+const prKeys=()=>S.noKids?['me','wife','home']:['me','wife','kids','home'];
+const prAll=r=>{const p=(r&&r.pr)||{};return prKeys().every(k=>p[k])&&!!p.aloud};
+function prStreak(){let n=0;const d=new Date();if(!prAll(S.log[today()]))d.setDate(d.getDate()-1);for(;;){if(prAll(S.log[fmt(d)])){n++;d.setDate(d.getDate()-1)}else break}return n}
+function dayVerse(a){const pd=dayPressure(a);if(pd)return{ref:pd[4],pd};const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?{ref:w.v[0],w}:{ref:'Eph 5:25'}}
+function prayCards(a,r){const v=dayVerse(a),P=makePrayers(a,{seed:today()+a.id,name:S.her.name,weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref}),p=r.pr||{};
+ const blk=(k,title,extra)=>`<div class="pray ${p[k]?'ok':''}"><div class="ph"><b>${title}</b>${extra||''}</div><p>${esc(P[k])}</p><button class="chk2 ${p[k]?'on':''}" data-pr="${k}">${p[k]?'Prayed ✓':'Mark prayed'}</button></div>`;
+ return `<div class="card"><h2 style="margin-top:0">My prayer</h2><p class="small vref">${esc(v.ref)} ESV</p>${blk('me','')}</div>
+ <div class="card"><h2 style="margin-top:0">Leadership Challenge</h2><p class="small vref">Pray each one. Pray aloud with your family.</p>
+ ${blk('wife','Pray for your wife')}${S.noKids?'':blk('kids','Pray for your children','<button class="lnk" id="nokids">No children at home</button>')}${blk('home','Pray for your home')}
+ <button class="chk2 aloud ${p.aloud?'on':''}" data-pr="aloud">${p.aloud?'Prayed aloud with family ✓':'Prayed aloud with family'}</button>
+ <div class="pstreak"><b>${prStreak()}</b> day prayer streak${S.noKids?' <button class="lnk" id="yeskids">Children at home</button>':''}</div></div>`}
 function dayRec(date){if(!S.log[date]){S.log[date]={aid:pick(date).id,done:false};save()}return S.log[date]}
 function streak(){let n=0;const d=new Date();if(!(S.log[today()]||{}).done)d.setDate(d.getDate()-1);for(;;){const k=d.toISOString?fmt(d):'';if(S.log[k]&&S.log[k].done){n++;d.setDate(d.getDate()-1)}else break}return n}
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -76,6 +87,7 @@ V.today=()=>{if(!scores()&&!S.started)return V.welcome();if(locked())return V.un
  <div class="card ${r.done?'done':''}"><div class="posture">Heart posture · ${a.posture}</div><h1>${esc(a.title)}</h1><p class="muted">${esc(a.why)}</p>
  <h2>Today's act for ${esc(n)}</h2><p><b>${esc(a.act)}</b></p><ol class="steps">${a.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
  ${S.her.interests||S.her.schedule?`<p class="small">Keep in mind: ${esc([S.her.interests,S.her.schedule].filter(Boolean).join(' · '))}</p>`:''}</div>
+ ${prayCards(a,r)}
  ${leadCards()}
  <div class="card"><h2 style="margin-top:0">Evening reflection</h2><p>${esc(a.reflect)}</p><textarea id="refl" placeholder="Write honestly. Only you will see this.">${esc(r.note)}</textarea>
  <button class="btn full ${r.done?'alt':'rust'}" id="done">${r.done?'Completed ✓ (tap to undo)':'Mark as done'}</button></div>
@@ -83,7 +95,7 @@ V.today=()=>{if(!scores()&&!S.started)return V.welcome();if(locked())return V.un
 function leadCards(){const ps=[...(S.her.pressures||[])].sort((x,y)=>(y.w==='week')-(x.w==='week')||(y.s==='major')-(x.s==='major'));if(!ps.length)return '';
  return `<div class="lead"><h2>Leading through it</h2>${ps.map((p,i)=>{const d=PRESSURE.find(x=>x[0]===p.k),g=GUIDE[p.k];return `<details class="card" ${i===0?'open':''}><summary><b>${esc(d[1])}</b><span class="tag">${p.w==='week'?'This week':'Ongoing'}</span></summary><ol class="steps">${g[0].map(s=>`<li>${esc(s)}</li>`).join('')}</ol>${g[1].map(verse).join('')}</details>`}).join('')}</div>`}
 V.history=()=>{const ds=Object.keys(S.log).sort().reverse();return `<h1>Completion log</h1><p>Streak: <b>${streak()}</b> · Completed: <b>${ds.filter(d=>S.log[d].done).length}</b> of ${ds.length} days</p>
- ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
+ ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}${prAll(r)?' · prayers ✓':''}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
 V.unlock=(wall)=>`<h1>${wall?'Your 7 free days are complete':'Unlock full access'}</h1><p>Well done finishing a week. Unlock unlimited daily assignments from the full library of ${ASSIGN_SRC.length}, with a one-time purchase, no subscription.</p>
  <div class="card">${CONFIG.gumroadProductId?`<a class="btn rust full" href="${esc(CONFIG.gumroadUrl)}" target="_blank" rel="noopener">Buy on Gumroad</a><p class="small">Then paste your license key:</p><input type="text" id="lic" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"><button class="btn full" id="verify">Unlock</button><p id="lmsg" class="small"></p>`:'<p><b>Purchasing opens soon.</b></p>'}
  <p class="small">Support and refunds are handled through Gumroad.</p></div>${wall?'<a class="btn alt full" href="#history">View my log</a>':''}`;
@@ -108,6 +120,9 @@ function bind(v,arg){
 const pb=$('#pbox');if(pb){const redraw=()=>{pb.innerHTML=pressBox();bindP()};const bindP=()=>{
   pb.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const k=c.dataset.p,L=S.her.pressures,i=L.findIndex(p=>p.k===k);if(i>=0)L.splice(i,1);else L.push({k,w:'week',s:PRESSURE.find(x=>x[0]===k)[2],at:Date.now()});save();redraw()});
   pb.querySelectorAll('.prow .seg button').forEach(b=>b.onclick=()=>{const p=S.her.pressures.find(p=>p.k===b.closest('.prow').dataset.k);p[b.dataset.g]=b.dataset.v;if(b.dataset.g==='w'&&b.dataset.v==='week')p.at=Date.now();save();redraw()})};bindP()}
+app.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{const r=S.log[today()];r.pr=r.pr||{};r.pr[b.dataset.pr]=!r.pr[b.dataset.pr];save();const y=scrollY;route();scrollTo(0,y)});
+ const nk=$('#nokids');if(nk)nk.onclick=()=>{S.noKids=true;save();const y=scrollY;route();scrollTo(0,y)};
+ const yk=$('#yeskids');if(yk)yk.onclick=()=>{S.noKids=false;save();const y=scrollY;route();scrollTo(0,y)};
  const rf=$('#refl');if(rf)rf.oninput=()=>{S.log[today()].note=rf.value;save()};
  const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;r.at=Date.now();save();route()};
  const vf=$('#verify');if(vf)vf.onclick=verifyLicense;

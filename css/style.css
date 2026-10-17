@@ -29,3 +29,7 @@ header .sub{display:block;color:#f6f1e8;opacity:.8;font-size:.78em;letter-spacin
 .seg button{font:600 13px system-ui;padding:8px 14px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .seg button.on{background:var(--rust);color:#fff}
 .lead h2{margin:1.2em 0 .2em}.lead details.card{padding:14px 16px}.lead summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}.lead summary::-webkit-details-marker{display:none}.lead ol.steps{margin:10px 0 4px;padding-left:20px}
+.pray{padding:12px 0;border-top:1px solid var(--line)}.pray:first-of-type{border-top:0}.pray p{margin:6px 0 10px}.ph{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.vref{margin:0 0 4px}.chk2{font:600 14px system-ui;padding:10px 16px;border-radius:999px;border:1.5px solid var(--green);background:transparent;color:var(--green);cursor:pointer}
+.chk2.on{background:var(--green);color:#fff}.chk2.aloud{width:100%;margin-top:14px;padding:13px;border-color:var(--rust);color:var(--rust)}.chk2.aloud.on{background:var(--rust);color:#fff}
+.lnk{font:500 12px system-ui;color:var(--muted);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}.pstreak{text-align:center;margin-top:12px;color:var(--muted);font:14px system-ui}.pstreak b{font-size:1.4em;color:var(--green)}
