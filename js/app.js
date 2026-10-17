@@ -119,8 +119,8 @@ V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accoun
 <div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>Only your license key goes to Gumroad, to unlock.<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>`;
 
 // ---------- Router ----------
-function route(){const [v,arg]=(location.hash.slice(1)||'today').split('/');const fn=V[v]||V.today;app.innerHTML=fn(arg);window.scrollTo(0,0);
- document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));$('#tabs').classList.toggle('hide',v==='test'||(v==='today'&&!scores()&&!S.started)||v==='welcome');bind(v,arg)}
+function route(){if(/^#heated/.test(location.hash))return;const [v,arg]=(location.hash.slice(1)||'today').split('/');const fn=V[v]||V.today;app.innerHTML=fn(arg);window.scrollTo(0,0);
+ document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));$('#tabs').classList.toggle('hide',v==='test'||(v==='today'&&!scores()&&!S.started)||v==='welcome');bind(v,arg);const hb=document.getElementById('hbtn');if(hb)hb.classList.toggle('show',v==='today'&&!!(scores()||S.started))}
 function bind(v,arg){
  app.querySelectorAll('.scale input').forEach(i=>i.onchange=()=>{S.answers[i.name]=+i.value;save();const n=Object.keys(S.answers).length;$('.prog i').style.width=n/1.2+'%'});
  const nx=$('#next');if(nx)nx.onclick=()=>{const p=+arg||0,items=ITEMS.slice(p*PER,p*PER+PER),miss=items.filter(i=>!S.answers[i.id]);if(miss.length){$('#err').textContent=`Please answer all ${miss.length} remaining statement(s) on this page.`;return}
@@ -146,7 +146,7 @@ const rr=()=>{const y=scrollY;route();scrollTo(0,y)};
  const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;r.at=Date.now();save();route()};
  const vf=$('#verify');if(vf)vf.onclick=verifyLicense;
  const ex=$('#export');if(ex)ex.onclick=()=>{const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='the-warmup-backup.json';a.click()};
- const wp=$('#wipe');if(wp)wp.onclick=()=>{if(confirm('Erase all your answers, notes and history from this device?')){localStorage.removeItem(KEY);location.hash='';location.reload()}};
+ const wp=$('#wipe');if(wp)wp.onclick=()=>{if(confirm('Erase all your answers, notes and history from this device?')){localStorage.removeItem(KEY);localStorage.removeItem('warmup.heated.last');location.hash='';location.reload()}};
 }
 async function verifyLicense(){const key=$('#lic').value.trim(),m=$('#lmsg');if(!key){m.textContent='Enter your license key.';return}m.textContent='Checking...';
  try{const r=await fetch('https://api.gumroad.com/v2/licenses/verify',{method:'POST',body:new URLSearchParams({product_id:CONFIG.gumroadProductId,license_key:key,increment_uses_count:'false'})});const j=await r.json();
