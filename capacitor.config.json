@@ -1,0 +1,6 @@
+{
+  "appId": "com.pocketappstudio.thewarmup",
+  "appName": "The WarmUp",
+  "webDir": "www",
+  "ios": { "contentInset": "always", "backgroundColor": "#2b3a32" }
+}

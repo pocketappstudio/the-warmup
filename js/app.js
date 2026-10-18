@@ -37,7 +37,7 @@ function prStreak(){let n=0;const d=new Date();if(!prAll(S.log[today()]))d.setDa
 function dayVerse(a){const pd=dayPressure(a);if(pd)return{ref:pd[4],pd};const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?{ref:w.v[0],w}:{ref:'Eph 5:25'}}
 function prayCards(a,r){const v=dayVerse(a),P=makePrayers(a,{seed:today()+a.id,name:S.her.name,weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref,need:r.need}),p=r.pr||{};
  const blk=(k,title,extra)=>`<div class="pray ${p[k]?'ok':''}"><div class="ph"><b>${title}</b>${extra||''}</div><p>${esc(P[k])}</p><button class="chk2 ${p[k]?'on':''}" data-pr="${k}">${p[k]?'Prayed ✓':'Mark prayed'}</button></div>`;
- return `<div class="card"><h2 style="margin-top:0">My prayer</h2><p class="small vref">${esc(v.ref)} WEB</p>${blk('me','')}</div>
+ return `<div class="card"><h2 style="margin-top:0">My prayer</h2><div class="ph"><p class="small vref">${esc(v.ref)} WEB</p>${window.NATIVE?'<span><button class="lnk" data-share="verse">Share verse</button> <button class="lnk" data-share="me">Share prayer</button></span>':''}</div>${blk('me','')}</div>
  <div class="card"><h2 style="margin-top:0">Leadership Challenge</h2><p class="small vref">Pray each one. Pray aloud with your family.</p>
  ${blk('wife','Pray for your wife')}${S.noKids?'':blk('kids','Pray for your children','<button class="lnk" id="nokids">No children at home</button>')}${blk('home','Pray for your home')}
  <button class="chk2 aloud ${p.aloud?'on':''}" data-pr="aloud">${p.aloud?'Prayed aloud with family ✓':'Prayed aloud with family'}</button>
@@ -107,16 +107,17 @@ function leadCards(){const ps=[...(S.her.pressures||[])].sort((x,y)=>(y.w==='wee
 V.history=()=>{const ds=Object.keys(S.log).sort().reverse();return `<h1>Completion log</h1><p>Streak: <b>${streak()}</b> · Completed: <b>${ds.filter(d=>S.log[d].done).length}</b> of ${ds.length} days</p>
  ${ds.map(d=>{const r=S.log[d],a=ASSIGN_SRC[r.aid];return `<div class="card ${r.done?'done':''}"><span class="small">${d} ${r.done?'✓ done':'· not done'}${prAll(r)?' · prayers ✓':''}${r.need?' · need: '+esc(NEED.find(x=>x[0]===r.need.k)[1].toLowerCase()):''}</span><br><b>${esc(a.title)}</b>${r.note?`<p class="small">${esc(r.note)}</p>`:''}</div>`}).join('')||'<p class="muted">No days yet.</p>'}`};
 V.unlock=(wall)=>`<h1>${wall?'Your 7 free days are complete':'Unlock full access'}</h1><p>Well done finishing a week. Unlock unlimited daily assignments from the full library of ${ASSIGN_SRC.length}, with a one-time purchase, no subscription.</p>
- <div class="card">${CONFIG.gumroadProductId?`<a class="btn rust full" href="${esc(CONFIG.gumroadUrl)}" target="_blank" rel="noopener">Buy on Gumroad</a><p class="small">Then paste your license key:</p><input type="text" id="lic" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"><button class="btn full" id="verify">Unlock</button><p id="lmsg" class="small"></p>`:'<p><b>Purchasing opens soon.</b></p>'}
- <p class="small">Support and refunds are handled through Gumroad.</p></div>${wall?'<a class="btn alt full" href="#history">View my log</a>':''}`;
-V.more=()=>`<h1>More</h1><a class="btn alt full" href="#results">My personality profile</a><a class="btn alt full" href="#test/0">Retake inventory</a><a class="btn alt full" href="#unlock">${S.license?'License: unlocked ✓':'Unlock full access'}</a><a class="btn alt full" href="#about">About & credits</a>
+ <div class="card">${window.NATIVE?`<button class="btn rust full" id="iapbuy">Full Access${Native.iap.price?' · '+esc(Native.iap.price):''}</button><button class="btn alt full" id="iaprestore">Restore Purchases</button><p id="lmsg" class="small"></p>`:CONFIG.gumroadProductId?`<a class="btn rust full" href="${esc(CONFIG.gumroadUrl)}" target="_blank" rel="noopener">Buy on Gumroad</a><p class="small">Then paste your license key:</p><input type="text" id="lic" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"><button class="btn full" id="verify">Unlock</button><p id="lmsg" class="small"></p>`:'<p><b>Purchasing opens soon.</b></p>'}
+ <p class="small">Support and refunds are handled through ${window.NATIVE?'Apple':'Gumroad'}.</p></div>${wall?'<a class="btn alt full" href="#history">View my log</a>':''}`;
+const remCard=()=>{const r=S.remind||{};return `<div class="card"><div class="ph"><b>Daily reminder</b><button class="chk2 ${r.on?'on':''}" id="remtog">${r.on?'On':'Off'}</button></div>${r.on?`<input type="time" id="remtime" value="${esc(r.time||'07:00')}" style="margin-top:12px">`:''}</div>`};
+V.more=()=>`<h1>More</h1>${window.NATIVE?remCard():''}<a class="btn alt full" href="#results">My personality profile</a><a class="btn alt full" href="#test/0">Retake inventory</a><a class="btn alt full" href="#unlock">${S.license?'License: unlocked ✓':'Unlock full access'}</a><a class="btn alt full" href="#about">About & credits</a>
  <div class="card"><b>Your data</b><p class="small">Stored only in this browser. Clearing browser data erases it.</p><button class="btn alt" id="export">Export backup</button> <button class="btn alt" id="wipe" style="color:#a33;border-color:#a33">Erase everything</button></div>`;
 V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accounts, no servers, no tracking.</p>
 <div class="card"><b>Personality inventory</b><p class="small">Items from the IPIP-NEO-120 (Johnson, J. A. 2014, Journal of Research in Personality, 51, 78-89), part of the International Personality Item Pool (Goldberg et al., 2006; ipip.ori.org), which is in the public domain. Result descriptions are original to this app.</p>${DISCLAIMER}</div>
 <div class="card"><b>Scripture</b><p class="small">Scripture: World English Bible (public domain).</p><p class="small">This app quotes ${VERSE_COUNT} verses.</p></div>
 <div class="card"><b>Safety</b><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>
-<div class="card"><b>Terms</b><p class="small">Provided as-is.<br>No guarantees of results.<br>For adults 18+, personal use.<br>Use at your own risk.<br>Support and refunds only through Gumroad.</p></div>
-<div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>Only your license key goes to Gumroad, to unlock.<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>
+<div class="card"><b>Terms</b><p class="small">Provided as-is.<br>No guarantees of results.<br>For adults 18+, personal use.<br>Use at your own risk.<br>Support and refunds only through ${window.NATIVE?'Apple':'Gumroad'}.</p></div>
+<div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>${window.NATIVE?'Nothing leaves this device.':'Only your license key goes to Gumroad, to unlock.'}<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>
 <p class="small"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a></p>`;
 
 // ---------- Router ----------
@@ -133,7 +134,7 @@ function bind(v,arg){
 const pb=$('#pbox');if(pb){const redraw=()=>{pb.innerHTML=pressBox();bindP()};const bindP=()=>{
   pb.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const k=c.dataset.p,L=S.her.pressures,i=L.findIndex(p=>p.k===k);if(i>=0)L.splice(i,1);else L.push({k,w:'week',s:PRESSURE.find(x=>x[0]===k)[2],at:Date.now()});save();redraw()});
   pb.querySelectorAll('.prow .seg button').forEach(b=>b.onclick=()=>{const p=S.her.pressures.find(p=>p.k===b.closest('.prow').dataset.k);p[b.dataset.g]=b.dataset.v;if(b.dataset.g==='w'&&b.dataset.v==='week')p.at=Date.now();save();redraw()})};bindP()}
-app.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{const r=S.log[today()];r.pr=r.pr||{};r.pr[b.dataset.pr]=!r.pr[b.dataset.pr];save();const y=scrollY;route();scrollTo(0,y)});
+app.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{const r=S.log[today()];r.pr=r.pr||{};r.pr[b.dataset.pr]=!r.pr[b.dataset.pr];if(r.pr[b.dataset.pr])hp(b.dataset.pr==='aloud'?'success':'light');save();const y=scrollY;route();scrollTo(0,y)});
  const nk=$('#nokids');if(nk)nk.onclick=()=>{S.noKids=true;save();const y=scrollY;route();scrollTo(0,y)};
  const yk=$('#yeskids');if(yk)yk.onclick=()=>{S.noKids=false;save();const y=scrollY;route();scrollTo(0,y)};
 const rr=()=>{const y=scrollY;route();scrollTo(0,y)};
@@ -141,10 +142,16 @@ const rr=()=>{const y=scrollY;route();scrollTo(0,y)};
  const nc=$('#needcancel');if(nc)nc.onclick=()=>{needOpen=false;rr()};
  app.querySelectorAll('[data-nk]').forEach(b=>b.onclick=()=>{needDraft.k=b.dataset.nk;const t=($('#neednote')||{}).value;needDraft.note=t;rr();const i=$('#neednote');if(i)i.value=needDraft.note||''});
  app.querySelectorAll('[data-nw]').forEach(b=>b.onclick=()=>{needDraft.who=b.dataset.nw;needDraft.note=($('#neednote')||{}).value;rr();const i=$('#neednote');if(i)i.value=needDraft.note||''});
- const ns=$('#needsave');if(ns)ns.onclick=()=>{if(!needDraft.k)return;S.log[today()].need={k:needDraft.k,who:needDraft.who,note:$('#neednote').value.trim().slice(0,80)};needOpen=false;save();rr()};
+ const ns=$('#needsave');if(ns)ns.onclick=()=>{if(!needDraft.k)return;S.log[today()].need={k:needDraft.k,who:needDraft.who,note:$('#neednote').value.trim().slice(0,80)};needOpen=false;hp('medium');save();rr()};
  const nu=$('#needundo');if(nu)nu.onclick=()=>{delete S.log[today()].need;save();rr()};
+const hp=k=>window.Native&&Native.haptic(k);
+ app.querySelectorAll('[data-share]').forEach(b=>b.onclick=()=>{const a=ASSIGN_SRC[S.log[today()].aid],v=dayVerse(a);hp('light');Native.share(b.dataset.share==='verse'?VERSES[v.ref]+' - '+v.ref+' WEB':makePrayers(a,{seed:today()+a.id,name:'',weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref,need:S.log[today()].need}).me+' - The WarmUp')});
+ const rt=$('#remtog');if(rt)rt.onclick=async()=>{S.remind=S.remind||{time:'07:00'};const on=!S.remind.on;hp('light');const ok=await Native.reminders(on,S.remind.time);S.remind.on=on&&ok;save();route()};
+ const rm=$('#remtime');if(rm)rm.onchange=async()=>{S.remind.time=rm.value||'07:00';save();await Native.reminders(true,S.remind.time)};
+ const ib=$('#iapbuy');if(ib)ib.onclick=()=>{hp('medium');$('#lmsg').textContent='';Native.iap.buy()};
+ const ir=$('#iaprestore');if(ir)ir.onclick=()=>{hp('light');$('#lmsg').textContent='Restoring...';Native.iap.restore();setTimeout(()=>{const m=$('#lmsg');if(m&&!S.license)m.textContent='No purchase found.'},6000)};
  const rf=$('#refl');if(rf)rf.oninput=()=>{S.log[today()].note=rf.value;save()};
- const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;r.at=Date.now();save();route()};
+ const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;if(r.done)hp('success');r.at=Date.now();save();route()};
  const vf=$('#verify');if(vf)vf.onclick=verifyLicense;
  const ex=$('#export');if(ex)ex.onclick=()=>{const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='the-warmup-backup.json';a.click()};
  const wp=$('#wipe');if(wp)wp.onclick=()=>{if(confirm('Erase all your answers, notes and history from this device?')){localStorage.removeItem(KEY);localStorage.removeItem('warmup.heated.last');location.hash='';location.reload()}};
@@ -153,5 +160,7 @@ async function verifyLicense(){const key=$('#lic').value.trim(),m=$('#lmsg');if(
  try{const r=await fetch('https://api.gumroad.com/v2/licenses/verify',{method:'POST',body:new URLSearchParams({product_id:CONFIG.gumroadProductId,license_key:key,increment_uses_count:'false'})});const j=await r.json();
   if(j.success&&!j.purchase.refunded&&!j.purchase.chargebacked){S.license={key,at:Date.now()};save();location.hash='#today';route()}else m.textContent='That key could not be verified. Check it and try again.'}
  catch(e){m.textContent='Could not reach Gumroad. Check your connection and try again.'}}
+if(window.NATIVE){Native.iap.on=()=>{if(Native.iap.owned&&!S.license){S.license={iap:true,at:Date.now()};save();location.hash='#today';route()}else if(location.hash==='#unlock')route()};
+ if(S.remind&&S.remind.on)Native.reminders(true,S.remind.time)}
 window.addEventListener('hashchange',route);route();
 })();

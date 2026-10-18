@@ -33,9 +33,9 @@ S.breathe=()=>{frame('red',`<div class="circ" id="c">IN</div><div class="bar"><i
  // calm red: bright to deep over the breathing minute
  requestAnimationFrame(()=>requestAnimationFrame(()=>{root.className='on deep'}));
  let n=0;const cycle=()=>{if(n>=6){go('tip');return}
-  c.textContent='IN';c.style.transition='transform 4s ease-in-out';c.style.transform='scale(1)';b.style.transition='width 4s linear';b.style.width='100%';
+  window.Native&&Native.haptic('light');c.textContent='IN';c.style.transition='transform 4s ease-in-out';c.style.transform='scale(1)';b.style.transition='width 4s linear';b.style.width='100%';
   if(n<2)say('h01-breathe-in');
-  T(()=>{c.textContent='OUT';c.style.transition='transform 6s ease-in-out';c.style.transform='scale(.55)';b.style.transition='width 6s linear';b.style.width='0';if(n<2)say('h02-slowly-out')},4000);
+  T(()=>{window.Native&&Native.haptic('light');c.textContent='OUT';c.style.transition='transform 6s ease-in-out';c.style.transform='scale(.55)';b.style.transition='width 6s linear';b.style.width='0';if(n<2)say('h02-slowly-out')},4000);
   T(()=>{n++;cycle()},10000)};T(cycle,300)};
 S.tip=()=>{const l=ld(),i=((l.tip===undefined?-1:l.tip)+1)%TIPS.length;sv({tip:i});const t=TIPS[i];
  frame('deep2',`<p style="font-size:30px;font-weight:700">${e(t[0])}</p><button class="big" id="n">NEXT</button>`);say(t[1]);root.querySelector('#n').onclick=()=>go('ask')};
