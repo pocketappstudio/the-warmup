@@ -116,7 +116,8 @@ V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accoun
 <div class="card"><b>Scripture</b><p class="small">Scripture: World English Bible (public domain).</p><p class="small">This app quotes ${VERSE_COUNT} verses.</p></div>
 <div class="card"><b>Safety</b><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>
 <div class="card"><b>Terms</b><p class="small">Provided as-is.<br>No guarantees of results.<br>For adults 18+, personal use.<br>Use at your own risk.<br>Support and refunds only through Gumroad.</p></div>
-<div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>Only your license key goes to Gumroad, to unlock.<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>`;
+<div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>Only your license key goes to Gumroad, to unlock.<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>
+<p class="small"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a></p>`;
 
 // ---------- Router ----------
 function route(){if(/^#heated/.test(location.hash))return;const [v,arg]=(location.hash.slice(1)||'today').split('/');const fn=V[v]||V.today;app.innerHTML=fn(arg);window.scrollTo(0,0);
