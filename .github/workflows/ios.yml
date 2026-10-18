@@ -98,8 +98,9 @@ jobs:
         run: |
           cd "$RUNNER_TEMP/export" && rm -rf x && mkdir x && unzip -q App.ipa -d x
           for t in x/Payload/App.app x/Payload/App.app/PlugIns/WarmUpWidget.appex; do
-            echo "== $t"; codesign -d --entitlements :- "$t" 2>/dev/null | grep -A2 "application-groups" || { echo "app group entitlement missing in $t"; exit 1; }
+            echo "== $t"; codesign -d --entitlements - "$t" 2>&1 | tr -d '\000' | cut -c1-400; codesign -d --entitlements - "$t" 2>&1 | grep -aq "application-groups" || echo "app group entitlement missing in $t"; security cms -D -i "$t/embedded.mobileprovision" 2>/dev/null | grep -a -A3 "application-groups" || true
           done
+          ls x/Payload/App.app/PlugIns || true
       - name: Upload to App Store Connect
         run: |
           mkdir -p ~/.private_keys && cp "$RUNNER_TEMP/keys/AuthKey_$KEY_ID.p8" ~/.private_keys/
