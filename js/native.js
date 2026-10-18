@@ -1,12 +1,13 @@
 // Native (Capacitor iOS) bridge. Does nothing on the web.
 (function(){
 const C=window.Capacitor,isNative=!!(C&&C.isNativePlatform&&C.isNativePlatform());
-window.NATIVE=isNative;if(!isNative){window.Native={is:false,haptic(){},share(){},iap:null};return}
+window.NATIVE=isNative;if(!isNative){window.Native={is:false,haptic(){},share(){},widget(){},iap:null};return}
 document.documentElement.classList.add('native');
 const P=C.Plugins||{};
 const PID='com.pocketappstudio.thewarmup.full';
 const N=window.Native={is:true,
  haptic(k){try{const H=P.Haptics;if(!H)return;if(k==='success')H.notification({type:'SUCCESS'});else if(k==='medium')H.impact({style:'MEDIUM'});else H.impact({style:'LIGHT'})}catch(e){}},
+ widget(d){try{const W=C.registerPlugin?C.registerPlugin('WidgetBridge'):P.WidgetBridge;W&&W.set(d)}catch(e){}},
  share(text){try{P.Share&&P.Share.share({text})}catch(e){}},
  async reminders(on,time){const L=P.LocalNotifications;if(!L)return false;
   try{await L.cancel({notifications:Array.from({length:40},(_,i)=>({id:1000+i}))})}catch(e){}

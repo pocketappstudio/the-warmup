@@ -122,7 +122,7 @@ V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accoun
 
 // ---------- Router ----------
 function route(){if(/^#heated/.test(location.hash))return;const [v,arg]=(location.hash.slice(1)||'today').split('/');const fn=V[v]||V.today;app.innerHTML=fn(arg);window.scrollTo(0,0);
- document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));$('#tabs').classList.toggle('hide',v==='test'||(v==='today'&&!scores()&&!S.started)||v==='welcome');bind(v,arg);const hb=document.getElementById('hbtn');if(hb)hb.classList.toggle('show',v==='today'&&!!(scores()||S.started))}
+ document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));$('#tabs').classList.toggle('hide',v==='test'||(v==='today'&&!scores()&&!S.started)||v==='welcome');bind(v,arg);const hb=document.getElementById('hbtn');if(hb)hb.classList.toggle('show',v==='today'&&!!(scores()||S.started));if(window.NATIVE&&v==='today'&&S.log[today()]){const r=S.log[today()],q=ASSIGN_SRC[r.aid],vv=dayVerse(q);Native.widget({verse:VERSES[vv.ref],ref:vv.ref+' WEB',title:q.title,streak:streak(),day:today()})}}
 function bind(v,arg){
  app.querySelectorAll('.scale input').forEach(i=>i.onchange=()=>{S.answers[i.name]=+i.value;save();const n=Object.keys(S.answers).length;$('.prog i').style.width=n/1.2+'%'});
  const nx=$('#next');if(nx)nx.onclick=()=>{const p=+arg||0,items=ITEMS.slice(p*PER,p*PER+PER),miss=items.filter(i=>!S.answers[i.id]);if(miss.length){$('#err').textContent=`Please answer all ${miss.length} remaining statement(s) on this page.`;return}
