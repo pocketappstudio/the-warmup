@@ -17,7 +17,7 @@ function suggested(sc){if(!sc)return[];return WEAK.filter(w=>w.auto&&level(sc.pc
 const DISCLAIMER='<p class="small"><b>Not a clinical diagnosis.</b> This is a self-reflection tool based on the public-domain IPIP-NEO-120 (Johnson, 2014; International Personality Item Pool, ipip.ori.org). Scores are relative to the scale, not to population norms. For mental health concerns, talk to a qualified counselor or pastor.</p>';
 const SAFE='If you or anyone in your home is in danger, or you have thoughts of self-harm, call 911 now, or 988 for crisis support.';
 const NOTADV='Not medical, mental-health, legal, financial or marriage-counseling advice. Seek pastoral or qualified help.';
-function verse(ref){return `<blockquote>${esc(VERSES[ref])}<b>${esc(ref)} ESV</b></blockquote>`}
+function verse(ref){return `<blockquote>${esc(VERSES[ref])}<b>${esc(ref)} WEB</b></blockquote>`}
 
 // ---------- Assignment engine ----------
 function hash(s){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
@@ -37,7 +37,7 @@ function prStreak(){let n=0;const d=new Date();if(!prAll(S.log[today()]))d.setDa
 function dayVerse(a){const pd=dayPressure(a);if(pd)return{ref:pd[4],pd};const w=WEAK.find(w=>S.weak.includes(w.id)&&a.tags.includes(w.id));return w?{ref:w.v[0],w}:{ref:'Eph 5:25'}}
 function prayCards(a,r){const v=dayVerse(a),P=makePrayers(a,{seed:today()+a.id,name:S.her.name,weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref,need:r.need}),p=r.pr||{};
  const blk=(k,title,extra)=>`<div class="pray ${p[k]?'ok':''}"><div class="ph"><b>${title}</b>${extra||''}</div><p>${esc(P[k])}</p><button class="chk2 ${p[k]?'on':''}" data-pr="${k}">${p[k]?'Prayed ✓':'Mark prayed'}</button></div>`;
- return `<div class="card"><h2 style="margin-top:0">My prayer</h2><p class="small vref">${esc(v.ref)} ESV</p>${blk('me','')}</div>
+ return `<div class="card"><h2 style="margin-top:0">My prayer</h2><p class="small vref">${esc(v.ref)} WEB</p>${blk('me','')}</div>
  <div class="card"><h2 style="margin-top:0">Leadership Challenge</h2><p class="small vref">Pray each one. Pray aloud with your family.</p>
  ${blk('wife','Pray for your wife')}${S.noKids?'':blk('kids','Pray for your children','<button class="lnk" id="nokids">No children at home</button>')}${blk('home','Pray for your home')}
  <button class="chk2 aloud ${p.aloud?'on':''}" data-pr="aloud">${p.aloud?'Prayed aloud with family ✓':'Prayed aloud with family'}</button>
@@ -113,7 +113,7 @@ V.more=()=>`<h1>More</h1><a class="btn alt full" href="#results">My personality 
  <div class="card"><b>Your data</b><p class="small">Stored only in this browser. Clearing browser data erases it.</p><button class="btn alt" id="export">Export backup</button> <button class="btn alt" id="wipe" style="color:#a33;border-color:#a33">Erase everything</button></div>`;
 V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accounts, no servers, no tracking.</p>
 <div class="card"><b>Personality inventory</b><p class="small">Items from the IPIP-NEO-120 (Johnson, J. A. 2014, Journal of Research in Personality, 51, 78-89), part of the International Personality Item Pool (Goldberg et al., 2006; ipip.ori.org), which is in the public domain. Result descriptions are original to this app.</p>${DISCLAIMER}</div>
-<div class="card"><b>Scripture</b><p class="small">Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.</p><p class="small">This app quotes ${VERSE_COUNT} verses.</p></div>
+<div class="card"><b>Scripture</b><p class="small">Scripture: World English Bible (public domain).</p><p class="small">This app quotes ${VERSE_COUNT} verses.</p></div>
 <div class="card"><b>Safety</b><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>
 <div class="card"><b>Terms</b><p class="small">Provided as-is.<br>No guarantees of results.<br>For adults 18+, personal use.<br>Use at your own risk.<br>Support and refunds only through Gumroad.</p></div>
 <div class="card"><b>Privacy</b><p class="small">Your data stays on this device.<br>Only your license key goes to Gumroad, to unlock.<br>Clearing browser data or losing your phone deletes everything.<br>No analytics or cookies.</p></div>`;

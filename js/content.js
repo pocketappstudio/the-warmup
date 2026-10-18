@@ -1,50 +1,50 @@
-// Scripture: ESV. See copyright notice in About. Verse count tracked in VERSE_COUNT.
+// Scripture: World English Bible (public domain). Verse count tracked in VERSE_COUNT.
 window.VERSES={
-"Jas 1:19-20":"Know this, my beloved brothers: let every person be quick to hear, slow to speak, slow to anger; for the anger of man does not produce the righteousness of God.",
-"Eph 4:26-27":"Be angry and do not sin; do not let the sun go down on your anger, and give no opportunity to the devil.",
-"Prov 15:1":"A soft answer turns away wrath, but a harsh word stirs up anger.",
-"Col 3:19":"Husbands, love your wives, and do not be harsh with them.",
-"Prov 29:11":"A fool gives full vent to his spirit, but a wise man quietly holds it back.",
-"Prov 16:18":"Pride goes before destruction, and a haughty spirit before a fall.",
-"Phil 2:3-4":"Do nothing from selfish ambition or conceit, but in humility count others more significant than yourselves. Let each of you look not only to his own interests, but also to the interests of others.",
-"Jas 4:6":"But he gives more grace. Therefore it says, “God opposes the proud but gives grace to the humble.”",
-"1 Pet 3:7":"Likewise, husbands, live with your wives in an understanding way, showing honor to the woman as the weaker vessel, since they are heirs with you of the grace of life, so that your prayers may not be hindered.",
-"Eph 5:25":"Husbands, love your wives, as Christ loved the church and gave himself up for her,",
-"Eph 5:28":"In the same way husbands should love their wives as their own bodies. He who loves his wife loves himself.",
-"Prov 25:28":"A man without self-control is like a city broken into and left without walls.",
-"Gal 5:22-23":"But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law.",
-"1 Cor 13:4-5":"Love is patient and kind; love does not envy or boast; it is not arrogant or rude. It does not insist on its own way; it is not irritable or resentful;",
-"Rom 12:15":"Rejoice with those who rejoice, weep with those who weep.",
-"1 Jn 3:17":"But if anyone has the world's goods and sees his brother in need, yet closes his heart against him, how does God's love abide in him?",
-"Prov 6:10-11":"A little sleep, a little slumber, a little folding of the hands to rest, and poverty will come upon you like a robber, and want like an armed man.",
-"Prov 13:4":"The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.",
-"Prov 23:20-21":"Be not among drunkards or among gluttonous eaters of meat, for the drunkard and the glutton will come to poverty, and slumber will clothe them with rags.",
-"1 Cor 6:12":"“All things are lawful for me,” but not all things are helpful. “All things are lawful for me,” but I will not be dominated by anything.",
-"Rom 12:18":"If possible, so far as it depends on you, live peaceably with all.",
-"Prov 18:2":"A fool takes no pleasure in understanding, but only in expressing his opinion.",
-"Prov 13:10":"By insolence comes nothing but strife, but with those who take advice is wisdom.",
-"Mk 10:45":"For even the Son of Man came not to be served but to serve, and to give his life as a ransom for many.",
-"Phil 4:6-7":"do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God. And the peace of God, which surpasses all understanding, will guard your hearts and your minds in Christ Jesus.",
-"1 Pet 5:7":"casting all your anxieties on him, because he cares for you.",
-"Ps 42:11":"Why are you cast down, O my soul, and why are you in turmoil within me? Hope in God; for I shall again praise him, my salvation and my God.",
-"2 Tim 1:7":"for God gave us a spirit not of fear but of power and self-control.",
-"Prov 12:18":"There is one whose rash words are like sword thrusts, but the tongue of the wise brings healing.",
-"Prov 19:2":"Desire without knowledge is not good, and whoever makes haste with his feet misses his way.",
-"Prov 21:5":"The plans of the diligent lead surely to abundance, but everyone who is hasty comes only to poverty.",
-"1 Cor 13:7":"Love bears all things, believes all things, hopes all things, endures all things.",
-"Eph 4:31-32":"Let all bitterness and wrath and anger and clamor and slander be put away from you, along with all malice. Be kind to one another, tenderhearted, forgiving one another, as God in Christ forgave you.",
-"Col 3:12":"Put on then, as God's chosen ones, holy and beloved, compassionate hearts, kindness, humility, meekness, and patience,",
-"Eccl 4:9-10":"Two are better than one, because they have a good reward for their toil. For if they fall, one will lift up his fellow. But woe to him who is alone when he falls and has not another to lift him up!",
-"Matt 22:39":"And a second is like it: You shall love your neighbor as yourself.",
-"Gal 6:9":"And let us not grow weary of doing good, for in due season we will reap, if we do not give up.",
-"Prov 28:13":"Whoever conceals his transgressions will not prosper, but he who confesses and forsakes them will obtain mercy.",
-"1 Jn 1:9":"If we confess our sins, he is faithful and just to forgive us our sins and to cleanse us from all unrighteousness.",
-"Lam 3:22-23":"The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness.",
-"Matt 11:28":"Come to me, all who labor and are heavy laden, and I will give you rest.",
-"Ps 139:23-24":"Search me, O God, and know my heart! Try me and know my thoughts! And see if there be any grievous way in me, and lead me in the way everlasting!",
-"1 Tim 5:8":"But if anyone does not provide for his relatives, and especially for members of his household, he has denied the faith and is worse than an unbeliever.",
-"Prov 17:9":"Whoever covers an offense seeks love, but he who repeats a matter separates close friends.",
-"Prov 27:17":"Iron sharpens iron, and one man sharpens another."
+"Jas 1:19-20":"So, then, my beloved brothers, let every man be swift to hear, slow to speak, and slow to anger; for the anger of man doesn’t produce the righteousness of God.",
+"Eph 4:26-27":"“Be angry, and don’t sin.” Don’t let the sun go down on your wrath, and don’t give place to the devil.",
+"Prov 15:1":"A gentle answer turns away wrath, but a harsh word stirs up anger.",
+"Col 3:19":"Husbands, love your wives, and don’t be bitter against them.",
+"Prov 29:11":"A fool vents all of his anger, but a wise man brings himself under control.",
+"Prov 16:18":"Pride goes before destruction, and an arrogant spirit before a fall.",
+"Phil 2:3-4":"doing nothing through rivalry or through conceit, but in humility, each counting others better than himself; each of you not just looking to his own things, but each of you also to the things of others.",
+"Jas 4:6":"But he gives more grace. Therefore it says, “God resists the proud, but gives grace to the humble.”",
+"1 Pet 3:7":"You husbands, in the same way, live with your wives according to knowledge, giving honor to the woman as to the weaker vessel, as also being joint heirs of the grace of life, that your prayers may not be hindered.",
+"Eph 5:25":"Husbands, love your wives, even as Christ also loved the assembly and gave himself up for her,",
+"Eph 5:28":"Even so husbands also ought to love their own wives as their own bodies. He who loves his own wife loves himself.",
+"Prov 25:28":"Like a city that is broken down and without walls is a man whose spirit is without restraint.",
+"Gal 5:22-23":"But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faith, gentleness, and self-control. Against such things there is no law.",
+"1 Cor 13:4-5":"Love is patient and is kind. Love doesn’t envy. Love doesn’t brag, is not proud, doesn’t behave itself inappropriately, doesn’t seek its own way, is not provoked, takes no account of evil;",
+"Rom 12:15":"Rejoice with those who rejoice. Weep with those who weep.",
+"1 Jn 3:17":"But whoever has the world’s goods and sees his brother in need, then closes his heart of compassion against him, how does God’s love remain in him?",
+"Prov 6:10-11":"A little sleep, a little slumber, a little folding of the hands to sleep— so your poverty will come as a robber, and your scarcity as an armed man.",
+"Prov 13:4":"The soul of the sluggard desires, and has nothing, but the desire of the diligent shall be fully satisfied.",
+"Prov 23:20-21":"Don’t be among ones drinking too much wine, or those who gorge themselves on meat; for the drunkard and the glutton shall become poor; and drowsiness clothes them in rags.",
+"1 Cor 6:12":"“All things are lawful for me,” but not all things are expedient. “All things are lawful for me,” but I will not be brought under the power of anything.",
+"Rom 12:18":"If it is possible, as much as it is up to you, be at peace with all men.",
+"Prov 18:2":"A fool has no delight in understanding, but only in revealing his own opinion.",
+"Prov 13:10":"Pride only breeds quarrels, but wisdom is with people who take advice.",
+"Mk 10:45":"For the Son of Man also came not to be served but to serve, and to give his life as a ransom for many.”",
+"Phil 4:6-7":"In nothing be anxious, but in everything, by prayer and petition with thanksgiving, let your requests be made known to God. And the peace of God, which surpasses all understanding, will guard your hearts and your thoughts in Christ Jesus.",
+"1 Pet 5:7":"casting all your worries on him, because he cares for you.",
+"Ps 42:11":"Why are you in despair, my soul? Why are you disturbed within me? Hope in God! For I shall still praise him, the saving help of my countenance, and my God.",
+"2 Tim 1:7":"For God didn’t give us a spirit of fear, but of power, love, and self-control.",
+"Prov 12:18":"There is one who speaks rashly like the piercing of a sword, but the tongue of the wise heals.",
+"Prov 19:2":"It isn’t good to have zeal without knowledge, nor to be hasty with one’s feet and miss the way.",
+"Prov 21:5":"The plans of the diligent surely lead to profit; and everyone who is hasty surely rushes to poverty.",
+"1 Cor 13:7":"bears all things, believes all things, hopes all things, and endures all things.",
+"Eph 4:31-32":"Let all bitterness, wrath, anger, outcry, and slander be put away from you, with all malice. And be kind to one another, tender hearted, forgiving each other, just as God also in Christ forgave you.",
+"Col 3:12":"Put on therefore, as God’s chosen ones, holy and beloved, a heart of compassion, kindness, lowliness, humility, and perseverance;",
+"Eccl 4:9-10":"Two are better than one, because they have a good reward for their labor. For if they fall, the one will lift up his fellow; but woe to him who is alone when he falls, and doesn’t have another to lift him up.",
+"Matt 22:39":"A second likewise is this, ‘You shall love your neighbor as yourself.’",
+"Gal 6:9":"Let’s not be weary in doing good, for we will reap in due season if we don’t give up.",
+"Prov 28:13":"He who conceals his sins doesn’t prosper, but whoever confesses and renounces them finds mercy.",
+"1 Jn 1:9":"If we confess our sins, he is faithful and righteous to forgive us the sins and to cleanse us from all unrighteousness.",
+"Lam 3:22-23":"It is because of Yahweh’s loving kindnesses that we are not consumed, because his mercies don’t fail. They are new every morning. Great is your faithfulness.",
+"Matt 11:28":"“Come to me, all you who labor and are heavily burdened, and I will give you rest.",
+"Ps 139:23-24":"Search me, God, and know my heart. Try me, and know my thoughts. See if there is any wicked way in me, and lead me in the everlasting way.",
+"1 Tim 5:8":"But if anyone doesn’t provide for his own, and especially his own household, he has denied the faith and is worse than an unbeliever.",
+"Prov 17:9":"He who covers an offense promotes love; but he who repeats a matter separates best friends.",
+"Prov 27:17":"Iron sharpens iron; so a man sharpens his friend’s countenance."
 };
 window.VERSE_COUNT=Object.keys(VERSES).reduce((n,k)=>{const m=k.match(/:(\d+)-(\d+)/);return n+(m?m[2]-m[1]+1:1)},0);
 
@@ -80,7 +80,7 @@ window.WEAK=[
 window.LOVE=[["acts","Practical help with her load"],["time","Undivided time together"],["listen","Being listened to"],["touch","Non-sexual affection"],["thought","Thoughtful gestures (remembering details)"],["rest","Being given rest / time alone"],["plans","You taking initiative / planning"],["faith","Praying and reading together"]];
 window.STRESS=[["house","Housework piling up"],["kids","Kids' needs"],["money","Money"],["work","Her job"],["health","Health / tiredness"],["family","Extended family"],["conflict","Tension between you"],["schedule","Overfull schedule"]];
 window.SEASON=[["ordinary","Steady / ordinary"],["newlywed","Newlyweds"],["kids","Young kids"],["pregnant","Pregnancy / postpartum"],["teens","Teens at home"],["empty","Empty nest"],["career","Career climb"],["caregiving","Caring for parents"],["grief","Loss / grief"],["recovery","Recovery / rebuilding"]];
-// Pressures: [id,label,default size,alias tag,verse ref (existing ESV only)]
+// Pressures: [id,label,default size,alias tag,verse ref (existing verses only)]
 window.PRESSURE=[["money","Money stress","major","money","Phil 4:6-7"],["debt","Debt","major","money","1 Pet 5:7"],["job","Job loss / overwork","major","work","Matt 11:28"],["health","Health","major","health","1 Pet 3:7"],["kids","Kids","major","kids","Gal 6:9"],["family","Extended family","major","family","Rom 12:18"],["grief","Grief","major","grief","Rom 12:15"],["move","Moving","major","overwhelm","Lam 3:22-23"],["house","House repair","major","house","Mk 10:45"],["car","Car / engine trouble","major","acts","Mk 10:45"],["schedule","Schedule collisions","minor","schedule","Prov 21:5"],["commute","Commute","minor","stress","Gal 6:9"],["chores","Chores piling up","minor","house","Mk 10:45"],["appliance","Broken appliance","minor","house","Gal 6:9"],["sleep","Poor sleep","minor","rest","Matt 11:28"]];
 
 // Assignments: title|posture|why|act|step;step;step|reflection|tags
@@ -202,7 +202,7 @@ Keep the Calm in the Storm|H|Your steadiness is part of her shelter.|In a stress
 Give Her the Quiet Hour|E|When life is loud, quiet is a kindness.|On a pressured day, protect an hour of peace for her and ask for nothing.|Ask what would feel restful;Handle the interruptions yourself;Don't fill the quiet with talk about the problem|Did I let her rest without guilt?|p-schedule,p-sleep,p-kids,rest,stress,health
 Pray With Her Over the Pressure|H|Shared burdens brought to God become lighter.|Pray with her, briefly and honestly, about the thing that is weighing most.|Ask what is heaviest right now;Pray out loud, simply, for her and the situation;Ask if there is one practical thing you can do tomorrow|Was it awkward? What was I afraid of?|faith,p-money,p-job,p-health,p-grief,p-family,anxiety,passive
 `.trim().split('\n').map((l,i)=>{const p=l.split('|');return{id:i,title:p[0],posture:{E:'Empathy',H:'Humility',S:'Selflessness'}[p[1]],why:p[2],act:p[3],steps:p[4].split(';'),reflect:p[5],tags:p[6].split(',')}});
-// Leading through it: [steps x3, verse refs] - ESV refs must exist in VERSES
+// Leading through it: [steps x3, verse refs] - refs must exist in VERSES
 window.GUIDE={
 money:[["Pray first, then look at the real numbers","Decide one action and tell her calmly","Review it together weekly, not daily"],["Phil 4:6-7","1 Pet 5:7"]],
 debt:[["Face the full number, with no hiding","Choose one plan and own the first payment","Tell her the plan and the date"],["Prov 21:5","1 Pet 5:7"]],

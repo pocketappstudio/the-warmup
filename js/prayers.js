@@ -13,7 +13,7 @@ window.makePrayers=function(a,o){ // o:{seed,name,weak,pressure,verseRef}
  const kids=[pick('k0',['Father, I lift up our children.','Lord, guard and shape our children.']),nl?nl+' Let them feel safe.':'',`Teach them ${t}, and let them see it in me first.`,pl?`Let them feel your peace through the pressure of ${pl}.`:{Empathy:'Help me see each child as you see them.',Humility:'Let them see a father who admits his faults.',Selflessness:'Let them see a father who serves.'}[post],'Amen.'].filter(Boolean).join(' ');
  const home=[pick('h0',['Lord, I give our home to you today.','Father, be the head of our household today.']),nl?nl+' Steady our home.':'',`Let our home be shaped by ${t}.`,pl?`Cover us through the pressure of ${pl}.`:'Make this house a place of peace and rest.',pick('h1',['Let me set the tone.','Start with me.']),'Amen.'].filter(Boolean).join(' ');
  return{me,wife,kids,home}};
-// Current Need: [id,label,phrase,ESV ref,encouragement]
+// Current Need: [id,label,phrase,verse ref,encouragement]
 window.NEED=[["wreck","Wreck","this wreck","Lam 3:22-23","People matter more than things now. Slow down, stay calm, and lead from steadiness."],
 ["sickness","Sickness","this sickness","Matt 11:28","Take the next step for her and the family. Your calm presence is part of the care."],
 ["death","Death","this loss","Ps 42:11","Grief needs presence, not answers. Stay near and say little."],
