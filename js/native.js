@@ -4,8 +4,9 @@ const C=window.Capacitor,isNative=!!(C&&C.isNativePlatform&&C.isNativePlatform()
 window.NATIVE=isNative;if(!isNative){window.Native={is:false,haptic(){},share(){},iap:null};return}
 document.documentElement.classList.add('native');
 const P=C.Plugins||{};
-const PID='com.pocketappstudio.thewarmup.full';
-const N=window.Native={is:true,
+const AND=C.getPlatform&&C.getPlatform()==='android';
+const PID=AND?'thewarmup_full':'com.pocketappstudio.thewarmup.full';
+const N=window.Native={is:true,store:AND?'Google Play':'Apple',
  haptic(k){try{const H=P.Haptics;if(!H)return;if(k==='success')H.notification({type:'SUCCESS'});else if(k==='medium')H.impact({style:'MEDIUM'});else H.impact({style:'LIGHT'})}catch(e){}},
  share(text){try{P.Share&&P.Share.share({text})}catch(e){}},
  async reminders(on,time){const L=P.LocalNotifications;if(!L)return false;
@@ -17,14 +18,14 @@ const N=window.Native={is:true,
    const day=Math.floor(d.getTime()/864e5),ref=refs[day%refs.length];
    list.push({id:1000+i,title:'The WarmUp',body:VERSES[ref]+' - '+ref+' WEB',schedule:{at:d,allowWhileIdle:true}})}
   if(list.length)await L.schedule({notifications:list});return true}};
-// In-app purchase (StoreKit via cordova-plugin-purchase)
+// In-app purchase (StoreKit on iOS, Play Billing on Android, via cordova-plugin-purchase)
 const iap=N.iap={price:'',owned:false,ready:false,on:null,
- init(){document.addEventListener('deviceready',()=>{try{const{store,ProductType,Platform}=CdvPurchase;
-   store.register([{id:PID,type:ProductType.NON_CONSUMABLE,platform:Platform.APPLE_APPSTORE}]);
-   const chk=()=>{const o=store.owned(PID);const p=store.get(PID,Platform.APPLE_APPSTORE);if(p&&p.pricing)iap.price=p.pricing.price||'';iap.ready=!!p;if(o&&!iap.owned){iap.owned=true}iap.on&&iap.on()};
+ init(){document.addEventListener('deviceready',()=>{try{const{store,ProductType,Platform}=CdvPurchase;const PLAT=AND?Platform.GOOGLE_PLAY:Platform.APPLE_APPSTORE;
+   store.register([{id:PID,type:ProductType.NON_CONSUMABLE,platform:PLAT}]);
+   const chk=()=>{const o=store.owned(PID);const p=store.get(PID,PLAT);if(p&&p.pricing)iap.price=p.pricing.price||'';iap.ready=!!p;if(o&&!iap.owned){iap.owned=true}iap.on&&iap.on()};
    store.when().productUpdated(chk).approved(t=>t.finish()).finished(chk);
-   store.initialize([Platform.APPLE_APPSTORE]).then(chk)}catch(e){}},false)},
- buy(){try{const{store,Platform}=CdvPurchase;const p=store.get(PID,Platform.APPLE_APPSTORE);const o=p&&p.getOffer();if(o)return store.order(o)}catch(e){}},
+   store.initialize([PLAT]).then(chk)}catch(e){}},false)},
+ buy(){try{const{store,Platform}=CdvPurchase;const PLAT=AND?Platform.GOOGLE_PLAY:Platform.APPLE_APPSTORE;const p=store.get(PID,PLAT);const o=p&&p.getOffer();if(o)return store.order(o)}catch(e){}},
  restore(){try{return CdvPurchase.store.restorePurchases()}catch(e){}}};
 iap.init();
 })();

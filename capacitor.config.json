@@ -2,5 +2,17 @@
   "appId": "com.pocketappstudio.thewarmup",
   "appName": "The WarmUp",
   "webDir": "www",
-  "ios": { "contentInset": "always", "backgroundColor": "#2b3a32" }
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#2b3a32"
+  },
+  "android": {
+    "backgroundColor": "#2b3a32"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_warmup",
+      "iconColor": "#C9824A"
+    }
+  }
 }
