@@ -48,7 +48,7 @@ function needCard(r){const n=r.need;if(n){const d=NEED.find(x=>x[0]===n.k),w=NEE
  if(!needOpen)return `<button class="btn alt full" id="needopen">+ Current Need</button>`;
  return `<div class="card need"><b>Current Need</b><div class="chips">${NEED.map(d=>`<button type="button" class="chip ${needDraft.k===d[0]?'on':''}" data-nk="${d[0]}">${esc(d[1])}</button>`).join('')}</div>
  <b class="small" style="display:block;margin-top:10px">Who it affects</b><div class="chips">${NEEDWHO.map(d=>`<button type="button" class="chip ${needDraft.who===d[0]?'on':''}" data-nw="${d[0]}">${esc(d[1])}</button>`).join('')}</div>
- <input type="text" id="neednote" maxlength="80" placeholder="Short note (optional)" style="margin-top:12px"><button class="btn full" id="needsave" ${needDraft.k?'':'disabled'}>Save</button> <button class="lnk" id="needcancel">Cancel</button><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>`}
+ <input type="text" id="neednote" maxlength="80" placeholder="Short note (optional)" style="margin-top:12px"><button class="btn full" id="needsave" aria-disabled="${needDraft.k?'false':'true'}">Save</button> <button class="lnk" id="needcancel">Cancel</button><p class="small">${SAFE}</p><p class="small">${NOTADV}</p></div>`}
 function dayRec(date){if(!S.log[date]){S.log[date]={aid:pick(date).id,done:false};save()}return S.log[date]}
 function streak(){let n=0;const d=new Date();if(!(S.log[today()]||{}).done)d.setDate(d.getDate()-1);for(;;){const k=d.toISOString?fmt(d):'';if(S.log[k]&&S.log[k].done){n++;d.setDate(d.getDate()-1)}else break}return n}
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -122,7 +122,7 @@ V.about=()=>`<h1>About</h1><p>The WarmUp is a private, on-device tool. No accoun
 
 // ---------- Router ----------
 function route(){if(/^#heated/.test(location.hash))return;const [v,arg]=(location.hash.slice(1)||'today').split('/');const fn=V[v]||V.today;app.innerHTML=fn(arg);window.scrollTo(0,0);
- document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));$('#tabs').classList.toggle('hide',v==='test'||(v==='today'&&!scores()&&!S.started)||v==='welcome');bind(v,arg);const hb=document.getElementById('hbtn');if(hb)hb.classList.toggle('show',v==='today'&&!!(scores()||S.started));if(window.NATIVE&&v==='today'&&S.log[today()]){const r=S.log[today()],q=ASSIGN_SRC[r.aid],vv=dayVerse(q);Native.widget({verse:VERSES[vv.ref],ref:vv.ref+' WEB',title:q.title,streak:streak(),day:today()})}}
+ document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+v));$('#tabs').classList.toggle('hide',v==='test'||(v==='today'&&!scores()&&!S.started)||v==='welcome');bind(v,arg);const hb=document.getElementById('hbtn');if(hb)hb.classList.toggle('show',v==='today'&&!!(scores()||S.started));if(window.NATIVE&&v==='today'&&S.log[today()])try{const r=S.log[today()],q=ASSIGN_SRC[r.aid],vv=dayVerse(q);Native.widget({verse:VERSES[vv.ref],ref:vv.ref+' WEB',title:q.title,streak:streak(),day:today()})}catch(e){}}
 function bind(v,arg){
  app.querySelectorAll('.scale input').forEach(i=>i.onchange=()=>{S.answers[i.name]=+i.value;save();const n=Object.keys(S.answers).length;$('.prog i').style.width=n/1.2+'%'});
  const nx=$('#next');if(nx)nx.onclick=()=>{const p=+arg||0,items=ITEMS.slice(p*PER,p*PER+PER),miss=items.filter(i=>!S.answers[i.id]);if(miss.length){$('#err').textContent=`Please answer all ${miss.length} remaining statement(s) on this page.`;return}
@@ -134,7 +134,7 @@ function bind(v,arg){
 const pb=$('#pbox');if(pb){const redraw=()=>{pb.innerHTML=pressBox();bindP()};const bindP=()=>{
   pb.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const k=c.dataset.p,L=S.her.pressures,i=L.findIndex(p=>p.k===k);if(i>=0)L.splice(i,1);else L.push({k,w:'week',s:PRESSURE.find(x=>x[0]===k)[2],at:Date.now()});save();redraw()});
   pb.querySelectorAll('.prow .seg button').forEach(b=>b.onclick=()=>{const p=S.her.pressures.find(p=>p.k===b.closest('.prow').dataset.k);p[b.dataset.g]=b.dataset.v;if(b.dataset.g==='w'&&b.dataset.v==='week')p.at=Date.now();save();redraw()})};bindP()}
-app.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{const r=S.log[today()];r.pr=r.pr||{};r.pr[b.dataset.pr]=!r.pr[b.dataset.pr];if(r.pr[b.dataset.pr])hp(b.dataset.pr==='aloud'?'success':'light');save();const y=scrollY;route();scrollTo(0,y)});
+app.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{const r=S.log[today()];r.pr=r.pr||{};r.pr[b.dataset.pr]=!r.pr[b.dataset.pr];save();const y=scrollY;route();scrollTo(0,y);if(r.pr[b.dataset.pr])hp(b.dataset.pr==='aloud'?'success':'light')});
  const nk=$('#nokids');if(nk)nk.onclick=()=>{S.noKids=true;save();const y=scrollY;route();scrollTo(0,y)};
  const yk=$('#yeskids');if(yk)yk.onclick=()=>{S.noKids=false;save();const y=scrollY;route();scrollTo(0,y)};
 const rr=()=>{const y=scrollY;route();scrollTo(0,y)};
@@ -142,16 +142,16 @@ const rr=()=>{const y=scrollY;route();scrollTo(0,y)};
  const nc=$('#needcancel');if(nc)nc.onclick=()=>{needOpen=false;rr()};
  app.querySelectorAll('[data-nk]').forEach(b=>b.onclick=()=>{needDraft.k=b.dataset.nk;const t=($('#neednote')||{}).value;needDraft.note=t;rr();const i=$('#neednote');if(i)i.value=needDraft.note||''});
  app.querySelectorAll('[data-nw]').forEach(b=>b.onclick=()=>{needDraft.who=b.dataset.nw;needDraft.note=($('#neednote')||{}).value;rr();const i=$('#neednote');if(i)i.value=needDraft.note||''});
- const ns=$('#needsave');if(ns)ns.onclick=()=>{if(!needDraft.k)return;S.log[today()].need={k:needDraft.k,who:needDraft.who,note:$('#neednote').value.trim().slice(0,80)};needOpen=false;hp('medium');save();rr()};
+ const ns=$('#needsave');if(ns)ns.onclick=()=>{const t=($('#neednote')||{}).value||'';if(!needDraft.k){needDraft.note=t;const c=app.querySelector('.need .chips');if(c){c.classList.remove('nudge');void c.offsetWidth;c.classList.add('nudge')}return}S.log[today()].need={k:needDraft.k,who:needDraft.who,note:t.trim().slice(0,80)};needOpen=false;save();rr();hp('medium')};
  const nu=$('#needundo');if(nu)nu.onclick=()=>{delete S.log[today()].need;save();rr()};
-const hp=k=>window.Native&&Native.haptic(k);
+const hp=k=>{try{window.Native&&Native.haptic(k)}catch(e){}};
  app.querySelectorAll('[data-share]').forEach(b=>b.onclick=()=>{const a=ASSIGN_SRC[S.log[today()].aid],v=dayVerse(a);hp('light');Native.share(b.dataset.share==='verse'?VERSES[v.ref]+' - '+v.ref+' WEB':makePrayers(a,{seed:today()+a.id,name:'',weak:v.w&&v.w.name,pressure:v.pd,verseRef:v.ref,need:S.log[today()].need}).me+' - The WarmUp')});
- const rt=$('#remtog');if(rt)rt.onclick=async()=>{S.remind=S.remind||{time:'07:00'};const on=!S.remind.on;hp('light');const ok=await Native.reminders(on,S.remind.time);S.remind.on=on&&ok;save();route()};
- const rm=$('#remtime');if(rm)rm.onchange=async()=>{S.remind.time=rm.value||'07:00';save();await Native.reminders(true,S.remind.time)};
- const ib=$('#iapbuy');if(ib)ib.onclick=()=>{hp('medium');$('#lmsg').textContent='';Native.iap.buy()};
- const ir=$('#iaprestore');if(ir)ir.onclick=()=>{hp('light');$('#lmsg').textContent='Restoring...';Native.iap.restore();setTimeout(()=>{const m=$('#lmsg');if(m&&!S.license)m.textContent='No purchase found.'},6000)};
+ const rt=$('#remtog');if(rt)rt.onclick=async()=>{S.remind=S.remind||{time:'07:00'};const on=!S.remind.on;S.remind.on=on;save();route();hp('light');let ok=false;try{ok=await Native.reminders(on,S.remind.time)}catch(e){}if(on&&!ok){S.remind.on=false;save();route()}};
+ const rm=$('#remtime');if(rm)rm.onchange=()=>{S.remind.time=rm.value||'07:00';save();try{Native.reminders(true,S.remind.time)}catch(e){}};
+ const ib=$('#iapbuy');if(ib)ib.onclick=()=>{$('#lmsg').textContent='';hp('medium');try{Native.iap.buy()}catch(e){}};
+ const ir=$('#iaprestore');if(ir)ir.onclick=()=>{$('#lmsg').textContent='Restoring...';hp('light');try{Native.iap.restore()}catch(e){};setTimeout(()=>{const m=$('#lmsg');if(m&&!S.license)m.textContent='No purchase found.'},6000)};
  const rf=$('#refl');if(rf)rf.oninput=()=>{S.log[today()].note=rf.value;save()};
- const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;if(r.done)hp('success');r.at=Date.now();save();route()};
+ const dn=$('#done');if(dn)dn.onclick=()=>{const r=S.log[today()];r.done=!r.done;r.at=Date.now();save();route();if(r.done)hp('success')};
  const vf=$('#verify');if(vf)vf.onclick=verifyLicense;
  const ex=$('#export');if(ex)ex.onclick=()=>{const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='the-warmup-backup.json';a.click()};
  const wp=$('#wipe');if(wp)wp.onclick=()=>{if(confirm('Erase all your answers, notes and history from this device?')){localStorage.removeItem(KEY);localStorage.removeItem('warmup.heated.last');location.hash='';location.reload()}};
@@ -161,6 +161,6 @@ async function verifyLicense(){const key=$('#lic').value.trim(),m=$('#lmsg');if(
   if(j.success&&!j.purchase.refunded&&!j.purchase.chargebacked){S.license={key,at:Date.now()};save();location.hash='#today';route()}else m.textContent='That key could not be verified. Check it and try again.'}
  catch(e){m.textContent='Could not reach Gumroad. Check your connection and try again.'}}
 if(window.NATIVE){Native.iap.on=()=>{if(Native.iap.owned&&!S.license){S.license={iap:true,at:Date.now()};save();location.hash='#today';route()}else if(location.hash==='#unlock')route()};
- if(S.remind&&S.remind.on)Native.reminders(true,S.remind.time)}
+ if(S.remind&&S.remind.on)try{Native.reminders(true,S.remind.time)}catch(e){}}
 window.addEventListener('hashchange',route);route();
 })();
