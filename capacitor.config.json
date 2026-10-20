@@ -3,7 +3,7 @@
   "appName": "The WarmUp",
   "webDir": "www",
   "ios": {
-    "contentInset": "always",
+    "contentInset": "never",
     "backgroundColor": "#2b3a32"
   },
   "android": {
