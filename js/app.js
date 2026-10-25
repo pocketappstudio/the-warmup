@@ -1,6 +1,6 @@
 (function(){
 const KEY='thewarmup.v1';try{if(!localStorage.getItem(KEY)){for(const o of ['lovelessons.v1','lovework.v1','loveher.v1','hfh.v1']){const v=localStorage.getItem(o);if(v){localStorage.setItem(KEY,v);break}}}['lovelessons.v1','lovework.v1','loveher.v1','hfh.v1'].forEach(o=>localStorage.removeItem(o))}catch(e){}
-const S=Object.assign({answers:{},weak:[],weakOther:'',her:{},log:{},license:null,started:false},JSON.parse(localStorage.getItem(KEY)||'{}'));
+const S=(()=>{const D={answers:{},weak:[],weakOther:'',her:{},log:{},license:null,started:false};let v={};try{v=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){v={}}if(typeof v!=='object'||Array.isArray(v))v={};const o=Object.assign({},D,v);for(const k of ['answers','her','log'])if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};if(!Array.isArray(o.weak))o.weak=[];if(typeof o.weakOther!=='string')o.weakOther='';return o})();
 if(!Array.isArray(S.her.pressures))S.her.pressures=[];S.her.pressures=S.her.pressures.filter(p=>p&&PRESSURE.some(x=>x[0]===p.k));
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const $=s=>document.querySelector(s), app=$('#app');
